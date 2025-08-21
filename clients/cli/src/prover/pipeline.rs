@@ -50,7 +50,7 @@ impl ProvingPipeline {
         let mut proof_hashes = Vec::new();
         let mut all_proofs: Vec<Proof> = Vec::new();
 
-        let all_inputs: Vec<Vec<u8>> = all_inputs.iter().cloned().collect();
+        let all_inputs: Vec<Vec<u8>> = all_inputs.to_vec();
 
         let stream = futures::stream::iter(all_inputs.into_iter().enumerate().map(
             |(input_index, input_data)| {
@@ -60,7 +60,7 @@ impl ProvingPipeline {
 
                     // Step 2: Generate and verify proof
                     let proof =
-                        ProvingEngine::prove_and_validate(&inputs, &task, &environment, &client_id)
+                        ProvingEngine::prove_and_validate(&inputs, task, environment, client_id)
                             .await
                             .map_err(|e| {
                                 match e {
@@ -86,16 +86,13 @@ impl ProvingPipeline {
             },
         ));
 
-        let results: Vec<(Proof, String, usize)> = match stream
-            .buffer_unordered(num_workers.clone())
-            .try_collect()
-            .await
-        {
-            Ok(res) => res,
-            Err(e) => {
-                return Err(e);
-            }
-        };
+        let results: Vec<(Proof, String, usize)> =
+            match stream.buffer_unordered(*num_workers).try_collect().await {
+                Ok(res) => res,
+                Err(e) => {
+                    return Err(e);
+                }
+            };
 
         let mut results = results;
         results.sort_by_key(|(_, _, index)| *index);
@@ -105,7 +102,7 @@ impl ProvingPipeline {
             all_proofs.push(proof);
         }
 
-        let final_proof_hash = Self::combine_proof_hashes(&task, &proof_hashes);
+        let final_proof_hash = Self::combine_proof_hashes(task, &proof_hashes);
 
         Ok((all_proofs, final_proof_hash, proof_hashes))
     }
