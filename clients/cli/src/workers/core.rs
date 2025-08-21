@@ -73,7 +73,11 @@ pub struct WorkerConfig {
 }
 
 impl WorkerConfig {
-    pub fn new(environment: crate::environment::Environment, client_id: String, num_workers: usize) -> Self {
+    pub fn new(
+        environment: crate::environment::Environment,
+        client_id: String,
+        num_workers: usize,
+    ) -> Self {
         Self {
             environment,
             client_id,
