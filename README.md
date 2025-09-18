@@ -30,6 +30,7 @@ There have been several testnets so far:
 - Testnet I: [December 9 – 13, 2024](https://blog.nexus.xyz/the-new-nexus-testnet-is-live/)
 - Testnet II: [February 18 – 22, 2025](https://blog.nexus.xyz/testnet-ii-is-open/)
 - Devnet: [February 22 - June 20, 2025](https://docs.nexus.xyz/layer-1/testnet/devnet)
+- Devnet: [February 22 - June 20, 2025](https://docs.nexus.xyz/layer-1/testnet/devnet)
 - Testnet III: [Ongoing](https://blog.nexus.xyz/live-everywhere/)
 
 ---
@@ -46,6 +47,7 @@ For the simplest and most reliable installation:
 curl https://cli.nexus.xyz/ | sh
 ```
 
+This downloads the latest binary, prompts for Terms of Use acceptance, and starts interactive mode.
 This downloads the latest binary, prompts for Terms of Use acceptance, and starts interactive mode.
 
 #### Non-Interactive Installation
@@ -73,8 +75,17 @@ Alternatively, you can register your wallet address and create a node ID with th
 ```bash
 nexus-cli register-user --wallet-address <your-wallet-address>
 nexus-cli register-node --node-id <your-cli-node-id>
+nexus-cli register-node --node-id <your-cli-node-id>
 nexus-cli start
 ```
+
+To run the CLI noninteractively, you can also opt to start it in headless mode.
+
+```bash
+nexus-cli start --headless
+```
+
+#### Quick Reference
 
 To run the CLI noninteractively, you can also opt to start it in headless mode.
 
@@ -90,6 +101,7 @@ The `register-user` and `register-node` commands will save your credentials to `
 nexus-cli logout
 ```
 
+For troubleshooting or to see available command-line options, run:
 For troubleshooting or to see available command-line options, run:
 
 ```bash
@@ -196,8 +208,27 @@ For containerized deployments:
 1. Install [Docker](https://docs.docker.com/engine/install/) and [Docker Compose](https://docs.docker.com/compose/install/)
 2. Update the node ID in `docker-compose.yaml`
 3. Build and run:
+nexus-cli start --max-difficulty large
+```
+
+**Unsure about system capabilities:**
+- Use the default adaptive system (no `--max-difficulty` needed)
+- The system will automatically find the optimal difficulty for your hardware
+- Only override if you're specifically unhappy with the automatic performance
+
+### Docker Installation
+
+For containerized deployments:
+
+1. Install [Docker](https://docs.docker.com/engine/install/) and [Docker Compose](https://docs.docker.com/compose/install/)
+2. Update the node ID in `docker-compose.yaml`
+3. Build and run:
 
 ```bash
+docker compose build --no-cache
+docker compose up -d
+docker compose logs  # Check logs
+docker compose down  # Shutdown
 docker compose build --no-cache
 docker compose up -d
 docker compose logs  # Check logs
@@ -253,6 +284,7 @@ itself.
 
 ### 🛠  Developer Guide
 
+The following steps may be required in order to set up a development environment for contributing to the project:
 The following steps may be required in order to set up a development environment for contributing to the project:
 
 #### Linux
